@@ -139,6 +139,30 @@ function getBooks() {
   return data;
 }
 
-function getBook(id) {
-  return data.find((d) => d.id === id);
-}
+//function getBook(id) {
+//  return data.find((d) => d.id === id);
+//}
+//
+//const books = getBooks();
+//book = books.find((d) => d.id === 2)
+//const { id, pages, genres } = book;
+//console.log(id, pages)
+//
+//
+//const [genre1, genre2, ...genress] = genres
+//genres
+//const newGenres = [...genres, "horror"];
+//newGenres
+//const dd = [...newGenres, "humor"]
+//dd;
+//const [firstgen, secondgen, ...rest] = dd
+//firstgen
+//rest;
+const books = getBooks();
+
+
+
+//const arr = [1, 4, 5, 6];
+const datas = await fetch("https://jsonplaceholder.typicode.com/todos/5")
+  .then((data) => data.json()).then((data) => console.log(data));
+
