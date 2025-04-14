@@ -19,12 +19,16 @@ const content = [
 ];
 
 export default function App() {
+  console.log(<DifferentContent />)
   return (
-    <div>
+    < div >
+
       <Tabbed content={content} />
-    </div>
+    </div >
   );
 }
+
+
 
 // console.log(<DifferentContent test={23} />);
 // console.log(DifferentContent());
