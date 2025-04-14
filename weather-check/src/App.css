@@ -26,8 +26,7 @@ body {
 .navbar input[type='text'] {
   padding: 0.5rem 1rem;
   border: none;
-  align-self: center;
-  text-align: center;
+
   border-radius: 4px;
   width: 250px;
   max-width: 100%;
@@ -68,4 +67,21 @@ body {
 .right-pane::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 4px;
+}
+
+.country-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.country-item:hover {
+  background-color: #f0f0f0;
+}
+
+.country-item.selected {
+  background-color: #3498db;
+  color: white;
+  font-weight: 500;
 }
