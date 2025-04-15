@@ -61,55 +61,71 @@ const Main = ({ children }) => {
 
 const LeftPane = ({ countryFilter, selectedCountry, setSelectedCountry }) => {
   const [loading, setLoading] = useState(true);
-  let [color, setColor] = useState("#2c3e50");
-  const [countries, setCountries] = useState([])
-  const countryApi = `https://restcountries.com/v3.1/region/europe?fields=name,capital,capitalInfo`
+  const [color] = useState("#2c3e50");
+  const [countries, setCountries] = useState([]);
+  const [filteredCountries, setFilteredCountries] = useState([]);
+  const countryApi = `https://restcountries.com/v3.1/region/europe?fields=name,capital,capitalInfo`;
 
-  useEffect(function () {
-
-
+  // Initial fetch
+  useEffect(() => {
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     async function getCountries() {
-      setLoading(true)
-      await sleep(2000); // Add delay to see spinner
-      const res = await fetch(countryApi)
-      const data = await res.json()
-      setCountries(data)
-      setLoading(false)
+      setLoading(true);
+      await sleep(2000); // simulate delay
+      const res = await fetch(countryApi);
+      const data = await res.json();
+      setCountries(data);
+      setLoading(false);
     }
-    getCountries()
 
-  }, [countryApi])
+    getCountries();
+  }, [countryApi]);
 
-  let sortedCountries = countries.slice()
+  // Filter when countryFilter changes
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      const sorted = countries
+        .slice()
+        .sort((a, b) => a.name.official.localeCompare(b.name.official))
+        .filter(country =>
+          country.name.official.toLowerCase().includes(countryFilter.toLowerCase())
+        );
 
-  sortedCountries.sort((a, b) => {
-    return a.name.official.localeCompare(b.name.official);
-  })
+      setFilteredCountries(sorted);
+      setLoading(false);
+    }, 500); // small delay to simulate loading
 
-  sortedCountries = sortedCountries.filter((country) => {
-    return country.name.official.includes(countryFilter)
-  })
+    return () => clearTimeout(timer); // clear timeout if filter changes quickly
+  }, [countryFilter, countries]);
 
+  return (
+    <div className="left-pane">
+      <h1>Countries</h1>
 
-
-
-  return (<div className="left-pane">
-
-    <h1>Countries</h1>
-
-    {loading ? <Spinner color={color} loading={loading} /> : sortedCountries.map((country) => {
-      return (
-        <div onClick={() => { setSelectedCountry(country) }} className={selectedCountry === country ? `country-item selected` : `country-item`}>{country.name.official}</div>
-      )
-    }
-    )
-    }
-  </div >)
-}
+      {loading ? (
+        <Spinner color={color} loading={loading} />
+      ) : (
+        filteredCountries.map((country) => (
+          <div
+            key={country.name.official}
+            onClick={() => setSelectedCountry(country)}
+            className={
+              selectedCountry === country
+                ? `country-item selected`
+                : `country-item`
+            }
+          >
+            {country.name.official}
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
 const RightPane = ({ selectedCountry }) => {
 
   useEffect(function () {
