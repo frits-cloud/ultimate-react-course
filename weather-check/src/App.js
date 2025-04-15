@@ -60,6 +60,7 @@ const Main = ({ children }) => {
 }
 
 const LeftPane = ({ countryFilter, selectedCountry, setSelectedCountry }) => {
+  const controller = new AbortController
   const [loading, setLoading] = useState(true);
   const [color] = useState("#2c3e50");
   const [countries, setCountries] = useState([]);
@@ -68,6 +69,8 @@ const LeftPane = ({ countryFilter, selectedCountry, setSelectedCountry }) => {
 
   // Initial fetch
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -75,13 +78,27 @@ const LeftPane = ({ countryFilter, selectedCountry, setSelectedCountry }) => {
     async function getCountries() {
       setLoading(true);
       await sleep(2000); // simulate delay
-      const res = await fetch(countryApi);
-      const data = await res.json();
-      setCountries(data);
-      setLoading(false);
+
+      try {
+        const res = await fetch(countryApi, { signal });
+        const data = await res.json();
+        setCountries(data);
+      } catch (err) {
+        // Ignore AbortError — it's expected during unmounts
+        if (err.name === 'AbortError') {
+          console.log('Fetch aborted (component unmounted or new effect)');
+        } else {
+          console.error('Fetch error:', err);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
 
     getCountries();
+    return () => {
+      controller.abort(); // abort fetch on unmount
+    };
   }, [countryApi]);
 
   // Filter when countryFilter changes
