@@ -77,7 +77,7 @@ const LeftPane = ({ countryFilter, selectedCountry, setSelectedCountry }) => {
 
     async function getCountries() {
       setLoading(true);
-      await sleep(2000); // simulate delay
+      await sleep(1000); // simulate delay
 
       try {
         const res = await fetch(countryApi, { signal });
