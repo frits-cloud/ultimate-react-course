@@ -1,24 +1,26 @@
 import './App.css';
-import { useEffect, useState } from 'react'
+import { useEffect, useState, CSSProperties } from 'react'
+import GridLoader from "react-spinners/GridLoader";
 
 function App() {
+
+  const [countryFilter, setCountryFilter] = useState("")
   const [selectedCountry, setSelectedCountry] = useState({})
 
   return (
     <div className="App">
-      <NavBar><Search />
-      </NavBar>
+      <NavBar><Search countryFilter={countryFilter} setCountryFilter={setCountryFilter} />
+      </NavBar >
       <Main>
-        <LeftPane selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
+        <LeftPane countryFilter={countryFilter} selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} />
         <RightPane selectedCountry={selectedCountry} />
       </Main>
-
     </div>
   );
 }
 
-const Search = () => {
-  return <input type="text"></input>
+const Search = ({ countryFilter, setCountryFilter }) => {
+  return <input placeholder='Search for a country' value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)} type="text"></input>
 }
 
 const NavBar = ({ children }) => {
@@ -26,6 +28,28 @@ const NavBar = ({ children }) => {
     <div className="navbar">{children}</div>
   )
 }
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "blue",
+};
+
+const Spinner = ({ color, loading }) => {
+  return (<>
+    <br />
+    <br />
+    <GridLoader
+      color={color}
+      loading={true}
+      cssOverride={override}
+      size={30}
+    />
+  </>
+  )
+}
+
+
 
 const Main = ({ children }) => {
   return (
@@ -35,36 +59,56 @@ const Main = ({ children }) => {
   )
 }
 
-const LeftPane = ({ selectedCountry, setSelectedCountry }) => {
-
+const LeftPane = ({ countryFilter, selectedCountry, setSelectedCountry }) => {
+  const [loading, setLoading] = useState(true);
+  let [color, setColor] = useState("#2c3e50");
   const [countries, setCountries] = useState([])
   const countryApi = `https://restcountries.com/v3.1/region/europe?fields=name,capital,capitalInfo`
 
   useEffect(function () {
+
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     async function getCountries() {
+      setLoading(true)
+      await sleep(2000); // Add delay to see spinner
       const res = await fetch(countryApi)
       const data = await res.json()
       setCountries(data)
+      setLoading(false)
     }
     getCountries()
+
   }, [countryApi])
 
-  const sortedCountries = countries.slice()
+  let sortedCountries = countries.slice()
+
   sortedCountries.sort((a, b) => {
     return a.name.official.localeCompare(b.name.official);
   })
 
+  sortedCountries = sortedCountries.filter((country) => {
+    return country.name.official.includes(countryFilter)
+  })
+
+
 
 
   return (<div className="left-pane">
+
     <h1>Countries</h1>
 
-    {sortedCountries.map((country) => {
+    {loading ? <Spinner color={color} loading={loading} /> : sortedCountries.map((country) => {
       return (
         <div onClick={() => { setSelectedCountry(country) }} className={selectedCountry === country ? `country-item selected` : `country-item`}>{country.name.official}</div>
       )
-    })}
-  </div>)
+    }
+    )
+    }
+  </div >)
 }
 const RightPane = ({ selectedCountry }) => {
 
