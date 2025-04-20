@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect, useState, CSSProperties } from 'react'
+import { useEffect, useState, useRef, CSSProperties } from 'react'
 import GridLoader from "react-spinners/GridLoader";
 
 function App() {
@@ -20,7 +20,13 @@ function App() {
 }
 
 const Search = ({ countryFilter, setCountryFilter }) => {
-  return <input placeholder='Search for a country' value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)} type="text"></input>
+  const inputSearch = useRef(null)
+
+  useEffect(() => {
+    inputSearch.current.focus();
+
+  }, [])
+  return <input ref={inputSearch} placeholder='Search for a country' value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)} type="text"></input>
 }
 
 const NavBar = ({ children }) => {
@@ -66,6 +72,8 @@ const LeftPane = ({ countryFilter, selectedCountry, setSelectedCountry }) => {
   const [countries, setCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState([]);
   const countryApi = `https://restcountries.com/v3.1/region/europe?fields=name,capital,capitalInfo`;
+
+
 
   // Initial fetch
   useEffect(() => {
