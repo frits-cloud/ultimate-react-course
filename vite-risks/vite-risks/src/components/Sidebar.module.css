@@ -1,0 +1,76 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 240px;
+  background-color: #101624;
+  color: #f1f1f1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.collapsed {
+  width: 70px;
+}
+
+.hamburger {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 15px;
+  z-index: 1100;
+  cursor: pointer;
+  border: none;
+}
+.hamburger button {
+  border: none;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  margin-top: 4cap;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  color: #4ecdc4;
+}
+
+.logo .icon {
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+}
+
+.menu li {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  color: #cfcfcf;
+}
+
+.menu li:hover {
+  background-color: #1b2233;
+  color: #ffffff;
+}
+
+.icon {
+  font-size: 18px;
+  margin-right: 12px;
+}
