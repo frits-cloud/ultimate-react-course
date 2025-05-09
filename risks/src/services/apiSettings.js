@@ -1,5 +1,5 @@
 import supabase from "./supabase";
-
+import { useUser } from "../features/authentication/useUser";
 export async function getSettings() {
   const { data, error } = await supabase.from("settings").select("*").single();
 
@@ -12,11 +12,12 @@ export async function getSettings() {
 
 // We expect a newSetting object that looks like {setting: newValue}
 export async function updateSetting(newSetting) {
+
   const { data, error } = await supabase
     .from("settings")
     .update(newSetting)
     // There is only ONE row of settings, and it has the ID=1, and so this is the updated one
-    .eq("id", 1)
+    .eq("user_id", newSetting.user_id)
     .single();
 
   if (error) {
